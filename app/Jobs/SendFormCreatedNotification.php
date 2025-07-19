@@ -19,7 +19,7 @@ class SendFormCreatedNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    
+
     public $form;
     public $email; // 👈 Add email as a property
 
@@ -30,20 +30,17 @@ class SendFormCreatedNotification implements ShouldQueue
     }
 
 
- public function handle()
+    public function handle()
     {
         try {
             Mail::to($this->email)->send(new FormCreatedMail($this->form));
-       
+
             FormMailLog::create([
                 'form_id' => $this->form->id,
                 'email' => $this->email,
                 'status' => 'success',
                 'error' => null,
             ]);
-
-    
- 
         } catch (\Throwable $e) {
             FormMailLog::create([
                 'form_id' => $this->form->id,
@@ -56,4 +53,3 @@ class SendFormCreatedNotification implements ShouldQueue
         }
     }
 }
- 

@@ -11,7 +11,7 @@
             <label class="form-label">Field Label</label>
             <input type="text" name="label" class="form-control" required>
             @error('label')
-                <small class="text-danger">{{ $message }}</small>
+            <small class="text-danger">{{ $message }}</small>
             @enderror
         </div>
 
@@ -27,7 +27,7 @@
                 <option value="radio">Radio</option>
             </select>
             @error('type')
-                <small class="text-danger">{{ $message }}</small>
+            <small class="text-danger">{{ $message }}</small>
             @enderror
         </div>
 
@@ -35,7 +35,7 @@
             <label class="form-label">Options (comma separated - for select, checkbox, radio only)</label>
             <input type="text" name="options" class="form-control">
             @error('options')
-                <small class="text-danger">{{ $message }}</small>
+            <small class="text-danger">{{ $message }}</small>
             @enderror
         </div>
 

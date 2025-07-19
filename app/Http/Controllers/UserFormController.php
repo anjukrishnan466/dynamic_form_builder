@@ -24,33 +24,32 @@ class UserFormController extends Controller
     }
 
     // Handle form submission
-   public function submit(Request $request, $formId)
-{
-    $form = Form::with('fields')->findOrFail($formId);
+    public function submit(Request $request, $formId)
+    {
+        $form = Form::with('fields')->findOrFail($formId);
 
-    $submission = new FormSubmission();
-    $submission->form_id = $form->id;
+        $submission = new FormSubmission();
+        $submission->form_id = $form->id;
 
-    // Build submitted data array
-    $data = [];
+        // Build submitted data array
+        $data = [];
 
-    foreach ($form->fields as $field) {
-        $inputName = 'field_' . $field->id;
-        $value = $request->input($inputName);
+        foreach ($form->fields as $field) {
+            $inputName = 'field_' . $field->id;
+            $value = $request->input($inputName);
 
-        if ($value === null) {
-            continue;
+            if ($value === null) {
+                continue;
+            }
+
+            $data[$field->label] = $value;
         }
 
-        $data[$field->label] = $value;
+        // Assign the full array at once
+        $submission->submitted_data = $data;
+
+        $submission->save();
+
+        return redirect()->route('user.forms.index')->with('success', 'Form submitted successfully!');
     }
-
-    // Assign the full array at once
-    $submission->submitted_data = $data;
-
-    $submission->save();
-
-    return redirect()->route('user.forms.index')->with('success', 'Form submitted successfully!');
-}
-
 }

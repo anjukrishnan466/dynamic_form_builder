@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -7,6 +8,7 @@ use App\Models\Form;
 use App\Models\FormField;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\SendFormCreatedNotification;
+
 class FormController extends Controller
 {
     public function index()
@@ -17,10 +19,10 @@ class FormController extends Controller
 
     public function create()
     {
-         return view('forms.create');
+        return view('forms.create');
     }
 
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -43,18 +45,20 @@ class FormController extends Controller
                 'form_id' => $form->id,
                 'label' => $label,
                 'type' => $request->types[$index],
-                'options' => $request->types[$index] === 'select' ? $request->options[$index] : null,
+                'options' => $request->types[$index] === 'select'
+                    ? json_encode(explode(',', $request->options[$index]))
+                    : null,
             ]);
         }
         SendFormCreatedNotification::dispatch($form, Auth::user()->email);
-    return redirect()->route('form.index')->with('success', 'Form created successfully!');
+        return redirect()->route('form.index')->with('success', 'Form created successfully!');
     }
     public function edit($id)
-{
-    $form = Form::with('fields')->findOrFail($id);
-    return view('forms.edit', compact('form'));
-}
- public function update(Request $request, $id)
+    {
+        $form = Form::with('fields')->findOrFail($id);
+        return view('forms.edit', compact('form'));
+    }
+    public function update(Request $request, $id)
     {
         $request->validate([
             'form_name' => 'required|string|max:255',
@@ -77,8 +81,8 @@ class FormController extends Controller
                 'label' => $label,
                 'type' => $request->types[$index],
                 'options' => $request->types[$index] === 'select'
-    ? json_encode(array_map('trim', explode(',', $request->options[$index] ?? '')))
-    : null,
+                    ? json_encode(array_map('trim', explode(',', $request->options[$index] ?? '')))
+                    : null,
 
             ]);
         }
@@ -86,13 +90,11 @@ class FormController extends Controller
         return redirect()->route('form.index')->with('success', 'Form updated successfully!');
     }
 
-public function destroy($id)
-{
-    $form = Form::findOrFail($id);
-    $form->delete(); // soft delete
+    public function destroy($id)
+    {
+        $form = Form::findOrFail($id);
+        $form->delete(); // soft delete
 
-    return redirect()->route('form.index')->with('success', 'Form soft deleted successfully!');
-}
-
-
+        return redirect()->route('form.index')->with('success', 'Form soft deleted successfully!');
+    }
 }

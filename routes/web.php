@@ -8,7 +8,7 @@ use App\Http\Controllers\FormController;
 use App\Http\Controllers\FormFieldController;
 use App\Http\Controllers\UserFormController;
 use Illuminate\Support\Facades\Mail;
- 
+
 
 
 /*
@@ -44,7 +44,7 @@ Route::post('/logout', function () {
     Auth::logout();
     return redirect('/admin/login');
 })->name('logout');
- 
+
 
 /*
 |--------------------------------------------------------------------------
@@ -68,9 +68,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Form field management (Add fields to a form)
     Route::get('/form/{formId}/field/create', [FormFieldController::class, 'create'])->name('field.create');
     Route::post('/form/{formId}/field/store', [FormFieldController::class, 'store'])->name('field.store');
-    
+
     // Test route (for testing middleware)
-   
+
 });
-
-

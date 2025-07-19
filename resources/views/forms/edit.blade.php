@@ -29,32 +29,33 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-@php
-    $optionsArray = [];
+                    @php
+                    $optionsArray = [];
 
-    if ($field->type === 'select') {
-        if (is_array($field->options)) {
-            // Already array
-            $optionsArray = $field->options;
-        } else {
-            $decoded = json_decode($field->options, true);
+                    if ($field->type === 'select') {
+                    if (is_array($field->options)) {
+                    // Already array
+                    $optionsArray = $field->options;
+                    } else {
+                    $decoded = json_decode($field->options, true);
 
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                $optionsArray = $decoded;
-            } else {
-                // Assume comma-separated string fallback
-                $optionsArray = explode(',', $field->options ?? '');
-            }
-        }
-    }
-@endphp
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $optionsArray = $decoded;
+                    } else {
+                    // Assume comma-separated string fallback
+                    $optionsArray = explode(',', $field->options ?? '');
+                    }
+                    }
+                    }
+                    @endphp
 
-<input type="text"
-    class="form-control options-field"
-    name="options[]"
-    value="{{ implode(',', $optionsArray) }}"
-    placeholder="Comma-separated options (only for dropdown)"
-    style="{{ $field->type == 'select' ? '' : 'display:none;' }}">              </div>
+                    <input type="text"
+                        class="form-control options-field"
+                        name="options[]"
+                        value="{{ implode(',', $optionsArray) }}"
+                        placeholder="Comma-separated options (only for dropdown)"
+                        style="{{ $field->type == 'select' ? '' : 'display:none;' }}">
+                </div>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-danger remove-field">Remove</button>
                 </div>
@@ -68,7 +69,7 @@
 </div>
 
 <script>
-    document.getElementById('add-field').addEventListener('click', function () {
+    document.getElementById('add-field').addEventListener('click', function() {
         const container = document.getElementById('field-container');
         const html = `
         <div class="field-group row mb-3">
@@ -94,7 +95,7 @@
         container.insertAdjacentHTML('beforeend', html);
     });
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-field')) {
             const group = e.target.closest('.field-group');
             const groups = document.querySelectorAll('.field-group');
