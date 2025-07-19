@@ -19,14 +19,18 @@
                     <input type="text" class="form-control" name="labels[]" placeholder="Label" required>
                 </div>
                 <div class="col-md-3">
-                    <select name="types[]" class="form-control" onchange="toggleOptions(this)">
+                    <select name="types[]" class="form-control type-selector" onchange="toggleOptions(this)" required>
                         <option value="text">Text</option>
                         <option value="number">Number</option>
+                        <option value="email">Email</option>
+                        <option value="textarea">Textarea</option>
                         <option value="select">Dropdown</option>
+                        <option value="checkbox">Checkbox</option>
+                        <option value="radio">Radio</option>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" class="form-control options-field" name="options[]" placeholder="Comma-separated options (only for dropdown)" style="display: none;">
+                    <input type="text" class="form-control options-field" name="options[]" placeholder="Comma-separated options (for select, checkbox, radio)" style="display: none;">
                 </div>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-danger remove-field">Remove</button>
@@ -40,27 +44,44 @@
 </div>
 
 <script>
-    document.getElementById('add-field').addEventListener('click', function() {
+    function toggleOptions(selectElement) {
+        const selectedType = selectElement.value;
+        const fieldGroup = selectElement.closest('.field-group');
+        const optionsField = fieldGroup.querySelector('.options-field');
+
+        if (['select', 'checkbox', 'radio'].includes(selectedType)) {
+            optionsField.style.display = 'block';
+        } else {
+            optionsField.style.display = 'none';
+        }
+    }
+
+    document.getElementById('add-field').addEventListener('click', function () {
         const container = document.getElementById('field-container');
-        const fieldGroup = container.querySelector('.field-group');
-        const clone = fieldGroup.cloneNode(true);
+        const firstFieldGroup = container.querySelector('.field-group');
+        const clone = firstFieldGroup.cloneNode(true);
+
+        // Reset values
         clone.querySelectorAll('input').forEach(input => input.value = '');
         clone.querySelector('.options-field').style.display = 'none';
+        clone.querySelector('select').selectedIndex = 0;
+
         container.appendChild(clone);
     });
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('type-selector')) {
+            toggleOptions(e.target);
+        }
+    });
+
+    document.addEventListener('click', function (e) {
         if (e.target && e.target.classList.contains('remove-field')) {
-            const groups = document.querySelectorAll('.field-group');
-            if (groups.length > 1) {
+            const fieldGroups = document.querySelectorAll('.field-group');
+            if (fieldGroups.length > 1) {
                 e.target.closest('.field-group').remove();
             }
         }
     });
-
-    function toggleOptions(select) {
-        const optionsInput = select.closest('.field-group').querySelector('.options-field');
-        optionsInput.style.display = select.value === 'select' ? 'block' : 'none';
-    }
 </script>
 @endsection

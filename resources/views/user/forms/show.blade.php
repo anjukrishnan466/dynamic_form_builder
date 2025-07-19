@@ -3,6 +3,15 @@
 @section('content')
 <div class="container mt-4">
     <h2 class="text-center mb-4">{{ $form->title }}</h2>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 
     <form method="POST" action="{{ route('user.forms.submit', $form->id) }}">
         @csrf
@@ -18,16 +27,25 @@
                 <div class="mb-3">
                     <label class="form-label">{{ $field->label }}</label>
 
-                    @if(in_array($field->type, ['text', 'number']))
+                    @php
+                    $options = json_decode($field->options ?? '[]', true);
+                    @endphp
+
+                    @if(in_array($field->type, ['text', 'number', 'email']))
                     <input
                         type="{{ $field->type }}"
                         name="field_{{ $field->id }}"
                         class="form-control"
                         required>
+
+                    @elseif($field->type === 'textarea')
+                    <textarea
+                        name="field_{{ $field->id }}"
+                        class="form-control"
+                        rows="3"
+                        required></textarea>
+
                     @elseif($field->type === 'select')
-                    @php
-                    $options = json_decode($field->options ?? '[]', true);
-                    @endphp
                     <select
                         name="field_{{ $field->id }}"
                         class="form-control"
@@ -40,6 +58,32 @@
                         <option disabled>No options available</option>
                         @endif
                     </select>
+
+                    @elseif($field->type === 'radio' && is_array($options))
+                    @foreach($options as $option)
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="radio"
+                            name="field_{{ $field->id }}"
+                            value="{{ $option }}"
+                            required>
+                        <label class="form-check-label">{{ $option }}</label>
+                    </div>
+                    @endforeach
+
+                    @elseif($field->type === 'checkbox' && is_array($options))
+                    @foreach($options as $option)
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="field_{{ $field->id }}[]"
+                            value="{{ $option }}"
+                            class="form-check-input">
+                        <label class="form-check-label">{{ $option }}</label>
+                    </div>
+                    @endforeach
                     @endif
                 </div>
                 @endforeach
@@ -50,16 +94,25 @@
                 <div class="mb-3">
                     <label class="form-label">{{ $field->label }}</label>
 
-                    @if(in_array($field->type, ['text', 'number']))
+                    @php
+                    $options = json_decode($field->options ?? '[]', true);
+                    @endphp
+
+                    @if(in_array($field->type, ['text', 'number', 'email']))
                     <input
                         type="{{ $field->type }}"
                         name="field_{{ $field->id }}"
                         class="form-control"
                         required>
+
+                    @elseif($field->type === 'textarea')
+                    <textarea
+                        name="field_{{ $field->id }}"
+                        class="form-control"
+                        rows="3"
+                        required></textarea>
+
                     @elseif($field->type === 'select')
-                    @php
-                    $options = json_decode($field->options ?? '[]', true);
-                    @endphp
                     <select
                         name="field_{{ $field->id }}"
                         class="form-control"
@@ -72,6 +125,31 @@
                         <option disabled>No options available</option>
                         @endif
                     </select>
+
+                    @elseif($field->type === 'radio' && is_array($options))
+                    @foreach($options as $option)
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="radio"
+                            name="field_{{ $field->id }}"
+                            value="{{ $option }}"
+                            required>
+                        <label class="form-check-label">{{ $option }}</label>
+                    </div>
+                    @endforeach
+
+                    @elseif($field->type === 'checkbox' && is_array($options))
+                    @foreach($options as $option)
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="field_{{ $field->id }}[]"
+                            value="{{ $option }}">
+                        <label class="form-check-label">{{ $option }}</label>
+                    </div>
+                    @endforeach
                     @endif
                 </div>
                 @endforeach

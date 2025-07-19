@@ -32,8 +32,7 @@
                         @method('DELETE')
                         <button class="btn btn-sm btn-danger">Delete</button>
                     </form>
-                    <a href="{{ route('field.create', $form->id) }}" class="btn btn-sm btn-success">Add Field</a>
-                </td>
+                 </td>
             </tr>
             @empty
             <tr>

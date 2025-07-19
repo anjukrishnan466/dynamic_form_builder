@@ -16,6 +16,14 @@
         <h4>Edit Fields</h4>
         <div id="field-container">
             @foreach($form->fields as $field)
+            @php
+                $optionsArray = [];
+
+                if (in_array($field->type, ['select', 'checkbox', 'radio'])) {
+                    $decoded = json_decode($field->options, true);
+                    $optionsArray = is_array($decoded) ? $decoded : explode(',', $field->options ?? '');
+                }
+            @endphp
             <div class="field-group row mb-3">
                 <input type="hidden" name="field_ids[]" value="{{ $field->id }}">
                 <div class="col-md-3">
@@ -25,36 +33,20 @@
                     <select name="types[]" class="form-control" onchange="toggleOptions(this)">
                         <option value="text" {{ $field->type == 'text' ? 'selected' : '' }}>Text</option>
                         <option value="number" {{ $field->type == 'number' ? 'selected' : '' }}>Number</option>
+                        <option value="email" {{ $field->type == 'email' ? 'selected' : '' }}>Email</option>
+                        <option value="textarea" {{ $field->type == 'textarea' ? 'selected' : '' }}>Textarea</option>
                         <option value="select" {{ $field->type == 'select' ? 'selected' : '' }}>Dropdown</option>
+                        <option value="checkbox" {{ $field->type == 'checkbox' ? 'selected' : '' }}>Checkbox</option>
+                        <option value="radio" {{ $field->type == 'radio' ? 'selected' : '' }}>Radio</option>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    @php
-                    $optionsArray = [];
-
-                    if ($field->type === 'select') {
-                    if (is_array($field->options)) {
-                    // Already array
-                    $optionsArray = $field->options;
-                    } else {
-                    $decoded = json_decode($field->options, true);
-
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                    $optionsArray = $decoded;
-                    } else {
-                    // Assume comma-separated string fallback
-                    $optionsArray = explode(',', $field->options ?? '');
-                    }
-                    }
-                    }
-                    @endphp
-
                     <input type="text"
                         class="form-control options-field"
                         name="options[]"
                         value="{{ implode(',', $optionsArray) }}"
-                        placeholder="Comma-separated options (only for dropdown)"
-                        style="{{ $field->type == 'select' ? '' : 'display:none;' }}">
+                        placeholder="Comma-separated options (for select, checkbox, radio)"
+                        style="{{ in_array($field->type, ['select', 'checkbox', 'radio']) ? '' : 'display:none;' }}">
                 </div>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-danger remove-field">Remove</button>
@@ -69,7 +61,7 @@
 </div>
 
 <script>
-    document.getElementById('add-field').addEventListener('click', function() {
+    document.getElementById('add-field').addEventListener('click', function () {
         const container = document.getElementById('field-container');
         const html = `
         <div class="field-group row mb-3">
@@ -81,7 +73,11 @@
                 <select name="types[]" class="form-control" onchange="toggleOptions(this)">
                     <option value="text">Text</option>
                     <option value="number">Number</option>
+                    <option value="email">Email</option>
+                    <option value="textarea">Textarea</option>
                     <option value="select">Dropdown</option>
+                    <option value="checkbox">Checkbox</option>
+                    <option value="radio">Radio</option>
                 </select>
             </div>
             <div class="col-md-4">
@@ -95,19 +91,19 @@
         container.insertAdjacentHTML('beforeend', html);
     });
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         if (e.target.classList.contains('remove-field')) {
-            const group = e.target.closest('.field-group');
             const groups = document.querySelectorAll('.field-group');
             if (groups.length > 1) {
-                group.remove();
+                e.target.closest('.field-group').remove();
             }
         }
     });
 
     function toggleOptions(select) {
         const optionsInput = select.closest('.field-group').querySelector('.options-field');
-        optionsInput.style.display = select.value === 'select' ? 'block' : 'none';
+        const show = ['select', 'checkbox', 'radio'].includes(select.value);
+        optionsInput.style.display = show ? 'block' : 'none';
     }
 </script>
 @endsection

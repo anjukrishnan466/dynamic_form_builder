@@ -64,11 +64,5 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/forms', [FormController::class, 'index'])->name('form.index');
     Route::get('/admin/form/create', [FormController::class, 'create'])->name('form.create');
     Route::post('/admin/forms/store', [FormController::class, 'store'])->name('form.store');
-
-    // Form field management (Add fields to a form)
-    Route::get('/form/{formId}/field/create', [FormFieldController::class, 'create'])->name('field.create');
-    Route::post('/form/{formId}/field/store', [FormFieldController::class, 'store'])->name('field.store');
-
-    // Test route (for testing middleware)
-
+ 
 });

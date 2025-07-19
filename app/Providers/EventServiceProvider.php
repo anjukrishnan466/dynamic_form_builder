@@ -7,6 +7,11 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
+// Import these to handle job events
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Support\Facades\Log;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -18,25 +23,29 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+
+        // Register listener class for job failures
+        JobFailed::class => [
+            \App\Listeners\LogMailFailure::class,
+        ],
     ];
 
     /**
      * Register any events for your application.
-     *
-     * @return void
      */
-   public function boot()
-{
-    // When a job is successfully processed
-    Event::listen(JobProcessed::class, function ($event) {
-        Log::info("Job processed: " . $event->job->resolveName());
-    });
+    public function boot(): void
+    {
+        parent::boot();
 
-    // When a job fails
-    Event::listen(JobFailed::class, function ($event) {
-        Log::error("Job failed: " . $event->job->resolveName());
-        Log::error("Error: " . $event->exception->getMessage());
-    });
-}
+        //  Log successful job processing
+        Event::listen(JobProcessed::class, function ($event) {
+            Log::info("Job processed: " . $event->job->resolveName());
+        });
 
+        //  Log failed jobs (additional to the listener above)
+        Event::listen(JobFailed::class, function ($event) {
+            Log::error("Job failed: " . $event->job->resolveName());
+            Log::error("Error: " . $event->exception->getMessage());
+        });
+    }
 }

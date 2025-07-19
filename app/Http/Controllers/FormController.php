@@ -23,72 +23,79 @@ class FormController extends Controller
     }
 
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'form_name' => 'required|string|max:255',
-            'labels' => 'required|array',
-            'types' => 'required|array',
-            'labels.*' => 'required|string',
-            'types.*' => 'required|string|in:text,number,select',
-            'options' => 'array',
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'form_name' => 'required|string|max:255',
+        'labels' => 'required|array',
+        'types' => 'required|array',
+        'labels.*' => 'required|string',
+        'types.*' => 'required|string|in:text,number,email,textarea,select,checkbox,radio',
+        'options' => 'array',
+    ]);
 
-        // Save the form
-        $form = Form::create([
-            'title' => $request->form_name,
-        ]);
+    $form = Form::create([
+        'title' => $request->form_name,
+    ]);
 
-        // Loop and save each form field
-        foreach ($request->labels as $index => $label) {
-            FormField::create([
-                'form_id' => $form->id,
-                'label' => $label,
-                'type' => $request->types[$index],
-                'options' => $request->types[$index] === 'select'
-                    ? json_encode(explode(',', $request->options[$index]))
-                    : null,
-            ]);
-        }
-        SendFormCreatedNotification::dispatch($form, Auth::user()->email);
-        return redirect()->route('form.index')->with('success', 'Form created successfully!');
+    foreach ($request->labels as $index => $label) {
+        $type = $request->types[$index];
+
+        $options = in_array($type, ['select', 'checkbox', 'radio']) && !empty($request->options[$index])
+            ? json_encode(array_map('trim', explode(',', $request->options[$index])))
+            : null;
+
+        FormField::create([
+            'form_id' => $form->id,
+            'label' => $label,
+            'type' => $type,
+            'options' => $options,
+        ]);
     }
+
+    SendFormCreatedNotification::dispatch($form, Auth::user()->email);
+
+    return redirect()->route('form.index')->with('success', 'Form created successfully!');
+}
+
     public function edit($id)
     {
         $form = Form::with('fields')->findOrFail($id);
         return view('forms.edit', compact('form'));
     }
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'form_name' => 'required|string|max:255',
-            'labels' => 'required|array',
-            'types' => 'required|array',
-            'labels.*' => 'required|string',
-            'types.*' => 'required|string|in:text,number,select',
-            'options' => 'array',
+   public function update(Request $request, $id)
+{
+    $request->validate([
+        'form_name' => 'required|string|max:255',
+        'labels' => 'required|array',
+        'types' => 'required|array',
+        'labels.*' => 'required|string',
+        'types.*' => 'required|string|in:text,number,email,textarea,select,checkbox,radio',
+        'options' => 'array',
+    ]);
+
+    $form = Form::findOrFail($id);
+    $form->update(['title' => $request->form_name]);
+
+    $form->fields()->delete();
+
+    foreach ($request->labels as $index => $label) {
+        $type = $request->types[$index];
+        $options = in_array($type, ['select', 'checkbox', 'radio']) && isset($request->options[$index])
+            ? json_encode(array_map('trim', explode(',', $request->options[$index])))
+            : null;
+
+        FormField::create([
+            'form_id' => $form->id,
+            'label' => $label,
+            'type' => $type,
+            'options' => $options,
         ]);
-
-        $form = Form::findOrFail($id);
-        $form->update(['title' => $request->form_name]);
-
-        // Delete old fields before re-inserting updated ones
-        $form->fields()->delete();
-
-        foreach ($request->labels as $index => $label) {
-            FormField::create([
-                'form_id' => $form->id,
-                'label' => $label,
-                'type' => $request->types[$index],
-                'options' => $request->types[$index] === 'select'
-                    ? json_encode(array_map('trim', explode(',', $request->options[$index] ?? '')))
-                    : null,
-
-            ]);
-        }
-
-        return redirect()->route('form.index')->with('success', 'Form updated successfully!');
     }
+
+    return redirect()->route('form.index')->with('success', 'Form updated successfully!');
+}
+
 
     public function destroy($id)
     {

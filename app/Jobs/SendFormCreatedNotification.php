@@ -13,7 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FormMailLog;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Carbon;
 
 class SendFormCreatedNotification implements ShouldQueue
 {
@@ -21,7 +21,7 @@ class SendFormCreatedNotification implements ShouldQueue
 
 
     public $form;
-    public $email; // 👈 Add email as a property
+    public $email;
 
     public function __construct(Form $form, string $email)
     {
@@ -34,19 +34,20 @@ class SendFormCreatedNotification implements ShouldQueue
     {
         try {
             Mail::to($this->email)->send(new FormCreatedMail($this->form));
-
-            FormMailLog::create([
+            $log = new FormMailLog([
                 'form_id' => $this->form->id,
                 'email' => $this->email,
                 'status' => 'success',
                 'error' => null,
             ]);
+            $log->save();
         } catch (\Throwable $e) {
             FormMailLog::create([
                 'form_id' => $this->form->id,
                 'email' => $this->email,
                 'status' => 'failed',
                 'error' => $e->getMessage(),
+
             ]);
 
             Log::error('Email send failed: ' . $e->getMessage());
