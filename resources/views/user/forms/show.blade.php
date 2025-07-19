@@ -8,72 +8,72 @@
         @csrf
 
         @php
-            $fields = $form->fields;
-            $half = ceil($fields->count() / 2);
+        $fields = $form->fields;
+        $half = ceil($fields->count() / 2);
         @endphp
 
         <div class="row">
             <div class="col-md-6">
                 @foreach ($fields->take($half) as $field)
-                    <div class="mb-3">
-                        <label class="form-label">{{ $field->label }}</label>
+                <div class="mb-3">
+                    <label class="form-label">{{ $field->label }}</label>
 
-                        @if($field->type === 'text' || $field->type === 'number')
-                            <input 
-                                type="{{ $field->type }}" 
-                                name="field_{{ $field->id }}" 
-                                class="form-control" 
-                                required>
-                        @elseif($field->type === 'select')
-                            <select 
-                                name="field_{{ $field->id }}" 
-                                class="form-control" 
-                                required>
-
-                                @php
-                                    $options = json_decode($field->options ?? '[]', true);
-                                @endphp
-
-                                @if(is_array($options))
-                                    @foreach($options as $option)
-                                        <option value="{{ $option }}">{{ $option }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
+                    @if(in_array($field->type, ['text', 'number']))
+                    <input
+                        type="{{ $field->type }}"
+                        name="field_{{ $field->id }}"
+                        class="form-control"
+                        required>
+                    @elseif($field->type === 'select')
+                    @php
+                    $options = json_decode($field->options ?? '[]', true);
+                    @endphp
+                    <select
+                        name="field_{{ $field->id }}"
+                        class="form-control"
+                        required>
+                        @if(is_array($options) && count($options))
+                        @foreach($options as $option)
+                        <option value="{{ $option }}">{{ $option }}</option>
+                        @endforeach
+                        @else
+                        <option disabled>No options available</option>
                         @endif
-                    </div>
+                    </select>
+                    @endif
+                </div>
                 @endforeach
             </div>
 
             <div class="col-md-6">
                 @foreach ($fields->slice($half) as $field)
-                    <div class="mb-3">
-                        <label class="form-label">{{ $field->label }}</label>
+                <div class="mb-3">
+                    <label class="form-label">{{ $field->label }}</label>
 
-                        @if($field->type === 'text' || $field->type === 'number')
-                            <input 
-                                type="{{ $field->type }}" 
-                                name="field_{{ $field->id }}" 
-                                class="form-control" 
-                                required>
-                        @elseif($field->type === 'select')
-                            <select 
-                                name="field_{{ $field->id }}" 
-                                class="form-control" 
-                                required>
-
-                                @php
-                                    $options = json_decode($field->options ?? '[]', true);
-                                @endphp
-
-                                @if(is_array($options))
-                                    @foreach($options as $option)
-                                        <option value="{{ $option }}">{{ $option }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
+                    @if(in_array($field->type, ['text', 'number']))
+                    <input
+                        type="{{ $field->type }}"
+                        name="field_{{ $field->id }}"
+                        class="form-control"
+                        required>
+                    @elseif($field->type === 'select')
+                    @php
+                    $options = json_decode($field->options ?? '[]', true);
+                    @endphp
+                    <select
+                        name="field_{{ $field->id }}"
+                        class="form-control"
+                        required>
+                        @if(is_array($options) && count($options))
+                        @foreach($options as $option)
+                        <option value="{{ $option }}">{{ $option }}</option>
+                        @endforeach
+                        @else
+                        <option disabled>No options available</option>
                         @endif
-                    </div>
+                    </select>
+                    @endif
+                </div>
                 @endforeach
             </div>
         </div>

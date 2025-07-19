@@ -21,7 +21,7 @@ class FormCreatedMail extends Mailable
     public function build()
     {
         return $this->subject('New Form Created')
-                    ->view('emails.form_created') // point to a real view
-                    ->with(['form' => $this->form]); // pass data to view
+            ->view('emails.form_created') // point to a real view
+            ->with(['form' => $this->form]); // pass data to view
     }
 }

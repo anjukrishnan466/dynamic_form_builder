@@ -40,7 +40,7 @@
 </div>
 
 <script>
-    document.getElementById('add-field').addEventListener('click', function () {
+    document.getElementById('add-field').addEventListener('click', function() {
         const container = document.getElementById('field-container');
         const fieldGroup = container.querySelector('.field-group');
         const clone = fieldGroup.cloneNode(true);
@@ -49,7 +49,7 @@
         container.appendChild(clone);
     });
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
         if (e.target && e.target.classList.contains('remove-field')) {
             const groups = document.querySelectorAll('.field-group');
             if (groups.length > 1) {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Admin Login</title>
@@ -75,9 +76,9 @@
             font-size: 14px;
             margin-top: 5px;
         }
-
     </style>
 </head>
+
 <body>
     <div class="login-box">
         <h2>Admin Login</h2>
@@ -86,17 +87,18 @@
             <label for="email">Email</label>
             <input type="email" name="email" id="email" required>
             @error('email')
-                <div class="error">{{ $message }}</div>
+            <div class="error">{{ $message }}</div>
             @enderror
 
             <label for="password">Password</label>
             <input type="password" name="password" id="password" required>
             @error('password')
-                <div class="error">{{ $message }}</div>
+            <div class="error">{{ $message }}</div>
             @enderror
 
             <button type="submit">Login</button>
         </form>
     </div>
 </body>
+
 </html>

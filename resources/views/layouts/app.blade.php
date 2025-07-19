@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
@@ -7,7 +8,7 @@
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -78,6 +79,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Sidebar -->
@@ -86,7 +88,7 @@
             <h2>Admin Panel</h2>
             <ul class="list-unstyled">
                 <li><a href="{{ route('form.index') }}">Form List</a></li>
-<li><a href="{{ route('form.create') }}">Create Form</a></li>
+                <li><a href="{{ route('form.create') }}">Create Form</a></li>
 
                 <!-- Add more links as needed -->
             </ul>
@@ -107,7 +109,7 @@
     <div class="main-content">
         <div class="header">
             <h1>Welcome, {{ Auth::user()->name }}</h1>
-            <p>You are logged in as an admin.</p>  
+            <p>You are logged in as an admin.</p>
         </div>
 
         <!-- Page Content -->
@@ -116,4 +118,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

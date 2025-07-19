@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 class FormField extends Model
 {
-        use SoftDeletes;
+    use SoftDeletes;
     protected $fillable = ['form_id', 'label', 'type', 'options'];
 
     protected $casts = [
