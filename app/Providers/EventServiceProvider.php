@@ -25,8 +25,18 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
-        //
-    }
+   public function boot()
+{
+    // When a job is successfully processed
+    Event::listen(JobProcessed::class, function ($event) {
+        Log::info("Job processed: " . $event->job->resolveName());
+    });
+
+    // When a job fails
+    Event::listen(JobFailed::class, function ($event) {
+        Log::error("Job failed: " . $event->job->resolveName());
+        Log::error("Error: " . $event->exception->getMessage());
+    });
+}
+
 }

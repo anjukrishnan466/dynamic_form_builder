@@ -7,6 +7,9 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\FormFieldController;
 use App\Http\Controllers\UserFormController;
+use Illuminate\Support\Facades\Mail;
+ 
+
 
 /*
 |--------------------------------------------------------------------------
@@ -69,3 +72,5 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Test route (for testing middleware)
    
 });
+
+

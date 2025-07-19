@@ -5,7 +5,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Form;
 use App\Models\FormField;
-
+use Illuminate\Support\Facades\Auth;
+use App\Jobs\SendFormCreatedNotification;
 class FormController extends Controller
 {
     public function index()
@@ -45,8 +46,8 @@ class FormController extends Controller
                 'options' => $request->types[$index] === 'select' ? $request->options[$index] : null,
             ]);
         }
-
-        return redirect()->route('form.index')->with('success', 'Form created successfully!');
+        SendFormCreatedNotification::dispatch($form, Auth::user()->email);
+    return redirect()->route('form.index')->with('success', 'Form created successfully!');
     }
     public function edit($id)
 {
