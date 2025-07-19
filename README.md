@@ -6,10 +6,9 @@ Follow these steps to set up the project locally:
 git clone https://github.com/your-username/dynamic-form-builder.git
 cd dynamic-form-builder
 
-  2. Rename .env File
+  2. Rename .env.example file as .env
 
-cp .env.example .env
-
+ 
   3. Configure .env Email & Queue Settings
 
 Update the .env file with the following:
