@@ -8,21 +8,37 @@ use Illuminate\Http\Request;
 
 class UserFormController extends Controller
 {
-    // Show all forms to user
+    /**
+     * Show all available forms to the user.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $forms = Form::withCount('fields')->whereNull('deleted_at')->get();
         return view('user.forms.index', compact('forms'));
     }
 
-    // Show a specific form to user
+    /**
+     * Show a specific form and its fields to the user.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function show($id)
     {
         $form = Form::with('fields')->findOrFail($id);
         return view('user.forms.show', compact('form'));
     }
 
-    // Handle form submission
+    /**
+     * Handle user form submission.
+     * Validates input based on field types, saves submission data.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $formId
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function submit(Request $request, $formId)
     {
         $form = Form::with('fields')->findOrFail($formId);
@@ -66,7 +82,7 @@ class UserFormController extends Controller
                 'email' => 'The :attribute must be a valid email address.',
                 'numeric' => 'The :attribute must be a number.',
             ],
-            $attributeNames // 👈 Custom field names go here
+            $attributeNames //  Custom field names go here
         );
 
         // Save submission
@@ -87,6 +103,6 @@ class UserFormController extends Controller
         $submission->submitted_data = $submittedData;
         $submission->save();
 
-        return redirect()->route('user.forms.index')->with('success', '✅ Form submitted successfully!');
+        return redirect()->route('user.forms.index')->with('success', ' Form submitted successfully!');
     }
 }
