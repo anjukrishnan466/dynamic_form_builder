@@ -64,5 +64,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/forms', [FormController::class, 'index'])->name('form.index');
     Route::get('/admin/form/create', [FormController::class, 'create'])->name('form.create');
     Route::post('/admin/forms/store', [FormController::class, 'store'])->name('form.store');
- 
+    // Admin route to view submissions of a form
+    Route::get('/admin/forms/{id}/submissions', [App\Http\Controllers\FormController::class, 'viewSubmissions'])->name('admin.forms.submissions');
 });

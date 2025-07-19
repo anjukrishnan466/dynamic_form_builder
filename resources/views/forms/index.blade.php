@@ -32,7 +32,11 @@
                         @method('DELETE')
                         <button class="btn btn-sm btn-danger">Delete</button>
                     </form>
-                 </td>
+                    <a href="{{ route('admin.forms.submissions', $form->id) }}" class="btn btn-sm btn-info">
+                        Saved Data
+                    </a>
+
+                </td>
             </tr>
             @empty
             <tr>
